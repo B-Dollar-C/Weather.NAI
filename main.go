@@ -104,9 +104,10 @@ func main() {
 			c.String(http.StatusInternalServerError, err.Error())
 			return
 		}
+		fmt.Println(data)
 		c.JSON(http.StatusOK, data)
 	})
-	if err := r.Run(":8080"); err != nil {
+	if err := r.Run(":443"); err != nil {
 		fmt.Println(err)
 	}
 }
