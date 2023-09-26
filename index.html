@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather.NAI</title>
+</head>
+<style>
+
+
+.navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-family: 'Quicksand'; /* Use a suitable font family */
+           font-size: 32px; /* Adjust the size as needed */
+        }
+
+        .weather-emoji {
+            font-size: 24px; /* Adjust the size as needed */
+            margin-left: 10px; /* Add spacing between the title and emoji */
+        }
+
+        /* Search bar styles (centered) */
+        .search-bar {
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .search-bar input[type="text"] {
+            width: 200px;
+            padding: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            padding: 5px 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Today's day and time styles (top right) */
+        .day-time {
+            text-align: left;
+            padding-left: 20px;
+        }
+    .weather-info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.weather-info p {
+    margin: 5px;
+}
+
+.temp::before {
+    content: "🌡️ ";
+}
+
+.pressure::before {
+    content: "🌫️ ";
+}
+
+.humidity::before {
+    content: "💧 ";
+}
+
+.sunrise::before {
+    content: "🌅 ";
+}
+
+.sunset::before {
+    content: "🌇 ";
+}
+
+.description::before {
+    content: "🌦️ ";
+}
+
+.wind-speed::before {
+    content: "🌬️ ";
+}
+
+.wind-direction::before {
+    content: "🧭 ";
+}
+
+.watermark {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity as needed */
+}
+
+.copyright {
+            background-color: #ADD8E6;/* Bluish-yellow background color */
+  color: #333; /* Text color */ /* Text color */
+  bottom: 10px;
+  text-align: center; /* Center-align the text */
+  padding: 10px; /* Add padding for spacing */
+  font-family: Arial, Helvetica, sans-serif; /* Font family */
+}
+
+.copyright p {
+  margin: 0; /* Remove default margin for the paragraph */
+  font-weight: bold;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* Apply flexbox layout to the body for sticky footer */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body takes at least the full viewport height */
+}
+
+.coordinates {
+            font-size: 18px; /* Adjust the font size as needed */
+            color: #333; /* Text color */
+            text-align: center; /* Center align the text */
+            margin-top: 10px; /* Add top margin for spacing */
+        }
+
+        /* Style for emoji */
+        .emoji {
+            font-size: 24px; /* Adjust the font size for the emoji */
+            margin-left: 5px; /* Add left margin for spacing between text and emoji */
+        }
+        .content {
+            flex-grow: 1; /* Allow content to grow and push footer down */
+        }
+
+
+</style>
+<body>
+    <div class="content">
+        <div class="navbar">
+            <h1 class="weather-emoji">Weather.NAI ☀️</h1>
+            <form id="weatherForm">
+                <div class="search-bar">
+                    <input type="text" id="cityInput" name="city" required placeholder="Enter City">
+                    <button type="submit">Get Weather</button>
+                </div>
+            </form>
+            <div class="day-time" id="dayTime"></div>
+        </div>
+        <div id="weatherResult" class="weather-info"></div>
+    </div>
+
+    <script>
+        document.getElementById("weatherForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const city = document.getElementById("cityInput").value;
+            const weatherResult = document.getElementById("weatherResult");
+
+            fetch(`/weather/${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    const latitudeWithEmoji = `Latitude: ${data.Coord.Lat} 🌐`;
+                    const longitudeWithEmoji = `Longitude: ${data.Coord.Lon} 🌏`;
+                    weatherResult.innerHTML = `
+                        <h2>Weather in ${city}</h2>
+                        <p class="temp">Temperature: ${data.Main.Celsius} &deg;C  |  ${data.Main.Temp} K</p>
+                        <p class= "pressure">Pressure: ${data.Main.Pressure} mm</p>
+                        <p class="humidity">Humidity: ${data.Main.Humidity}%</p>
+                        <p class= "sunrise">Sunrise: ${data.Sys.SunriseTime}</p>
+                        <p class="sunset">Sunset: ${data.Sys.SunsetTime}</p>
+                        <p class = "description">Weather: ${data.Weather[0].Description}</p>
+                        <p class="wind-speed">Wind Speed: ${data.Wind.Speed} km/h</p>
+                        <p class= "wind-direction">Wind Direction: ${data.Wind.Deg}&deg</p>
+                        <p class="coordinates">${latitudeWithEmoji}</p>
+                        <p class="coordinates">${longitudeWithEmoji}</p>
+
+                    `;
+
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    weatherResult.innerHTML = "An error occurred while fetching weather data.";
+                });
+        });
+
+        function updateDayTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
+            const formattedDate = now.toLocaleDateString('en-US', options);
+            document.getElementById("dayTime").textContent = formattedDate;
+        }
+
+        updateDayTime();
+        setInterval(updateDayTime, 1000);
+
+
+        
+    </script>
+    <div class="watermark">
+        Powered by OpenWeather and Google Maps
+    </div>
+    <footer class="copyright">
+        <p>&copy; 2023 B$C | Northern AI | All rights reserved</p>
+      </footer>
+</body>
+</html>
