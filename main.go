@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -89,17 +88,7 @@ func query(city string) (weatherData, error) {
 
 func main() {
 	gin.SetMode(gin.ReleaseMode)
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"https://weatherify-quud.onrender.com"} // Use "*" to allow any origin (or specify specific origins)
-	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
-	config.AllowHeaders = []string{"Origin", "Content-Type", "Accept"}
-	config.ExposeHeaders = []string{"Content-Length"}
-	config.AllowCredentials = true // Set to true if your frontend sends credentials (e.g., cookies)
-
-	// Create the CORS middleware with the configuration
-	corsMiddleware := cors.New(config)
 	r := gin.Default()
-	r.Use(corsMiddleware)
 	r.GET("/", func(c *gin.Context) {
 		indexHtml, err := ioutil.ReadFile("index.html")
 		if err != nil {

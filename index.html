@@ -176,7 +176,7 @@ body {
             const city = document.getElementById("cityInput").value;
             const weatherResult = document.getElementById("weatherResult");
 
-            fetch(`https://weatherify-quud.onrender.com/weather/${city}`)
+            fetch(`/weather/${city}`)
                 .then(response => response.json())
                 .then(data => {
                     const latitudeWithEmoji = `Latitude: ${data.Coord.Lat} 🌐`;
