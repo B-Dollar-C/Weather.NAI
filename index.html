@@ -157,7 +157,7 @@ body {
 <body>
     <div class="content">
         <div class="navbar">
-            <h1 class="weather-emoji">Weather.NAI ☀️</h1>
+            <h1 class="weather-emoji">Forecaster ☀️</h1>
             <form id="weatherForm">
                 <div class="search-bar">
                     <input type="text" id="cityInput" name="city" required placeholder="Enter City">
@@ -176,7 +176,7 @@ body {
             const city = document.getElementById("cityInput").value;
             const weatherResult = document.getElementById("weatherResult");
 
-            fetch(`/weather/${city}`)
+            fetch(`https://forecaster-rr7v.onrender.com/weather/${city}`)
                 .then(response => response.json())
                 .then(data => {
                     const latitudeWithEmoji = `Latitude: ${data.Coord.Lat} 🌐`;
