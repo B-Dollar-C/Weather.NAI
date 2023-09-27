@@ -176,7 +176,7 @@ body {
             const city = document.getElementById("cityInput").value;
             const weatherResult = document.getElementById("weatherResult");
 
-            fetch(`https://forecaster-rr7v.onrender.com/weather/${city}`)
+            fetch(`/weather/${city}`)
                 .then(response => response.json())
                 .then(data => {
                     const latitudeWithEmoji = `Latitude: ${data.Coord.Lat} 🌐`;
@@ -199,6 +199,7 @@ body {
                 })
                 .catch(error => {
                     console.error("Error:", error);
+                    console.log(error.message + "hiiiiiiiiii")
                     weatherResult.innerHTML = "An error occurred while fetching weather data.";
                 });
         });

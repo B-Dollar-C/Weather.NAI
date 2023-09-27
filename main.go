@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -87,8 +89,18 @@ func query(city string) (weatherData, error) {
 }
 
 func main() {
-	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	r.Use(CORSMiddleware())
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	if err := r.Run(":" + port); err != nil {
+		log.Panicf("error: %s", err)
+	}
+
 	r.GET("/", func(c *gin.Context) {
 		indexHtml, err := ioutil.ReadFile("index.html")
 		if err != nil {
@@ -107,7 +119,22 @@ func main() {
 		fmt.Println(data)
 		c.JSON(http.StatusOK, data)
 	})
-	if err := r.Run(":443"); err != nil {
-		fmt.Println(err)
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Authorization")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+
+		}
+
+		c.Next()
 	}
+
 }
