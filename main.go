@@ -92,15 +92,6 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(CORSMiddleware())
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
-	if err := r.Run(":" + port); err != nil {
-		log.Panicf("error: %s", err)
-	}
-
 	r.GET("/", func(c *gin.Context) {
 		indexHtml, err := ioutil.ReadFile("index.html")
 		if err != nil {
@@ -119,6 +110,14 @@ func main() {
 		fmt.Println(data)
 		c.JSON(http.StatusOK, data)
 	})
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	if err := r.Run(":" + port); err != nil {
+		log.Panicf("error: %s", err)
+	}
 }
 
 func CORSMiddleware() gin.HandlerFunc {
