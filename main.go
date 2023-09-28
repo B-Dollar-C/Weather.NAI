@@ -67,7 +67,7 @@ func query(city string) (weatherData, error) {
 	if err != nil {
 		return weatherData{}, nil
 	}
-	resp, err := http.Get("http://api.openweathermap.org/data/2.5/weather?APPID=" + apiConfig.OpenWeatherMapApiKey + "&q=" + city)
+	resp, err := http.Get("https://api.openweathermap.org/data/2.5/weather?APPID=" + apiConfig.OpenWeatherMapApiKey + "&q=" + city)
 	fmt.Println(resp)
 	if err != nil {
 		return weatherData{}, err
@@ -92,14 +92,6 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(CORSMiddleware())
-	r.GET("/", func(c *gin.Context) {
-		indexHtml, err := ioutil.ReadFile("index.html")
-		if err != nil {
-			c.String(http.StatusInternalServerError, err.Error())
-			return
-		}
-		c.Data(http.StatusOK, "text/html; charset=utf-8", indexHtml)
-	})
 	r.GET("/weather/:city", func(c *gin.Context) {
 		city := c.Param("city")
 		data, err := query(city)
