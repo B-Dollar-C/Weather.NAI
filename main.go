@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -11,10 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-type apiConfigData struct {
-	OpenWeatherMapApiKey string `json: "OpenWeatherMapApiKey"`
-}
 
 type weatherData struct {
 	Name string `json: "name"`
@@ -48,30 +43,14 @@ type Weath struct {
 	Description string `json: "description"`
 }
 
-func loadApiConfig(filename string) (apiConfigData, error) {
-	bytes, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return apiConfigData{}, err
-	}
-
-	var c apiConfigData
-	err = json.Unmarshal(bytes, &c)
-	if err != nil {
-		return apiConfigData{}, err
-	}
-	return c, nil
-}
-
 func query(city string) (weatherData, error) {
-	apiConfig, err := loadApiConfig(".apiConfig")
-	if err != nil {
-		return weatherData{}, nil
-	}
-	resp, err := http.Get("https://api.openweathermap.org/data/2.5/weather?APPID=" + apiConfig.OpenWeatherMapApiKey + "&q=" + city)
+	api := os.Getenv("OpenWeatherMapApiKey")
+	resp, err := http.Get("https://api.openweathermap.org/data/2.5/weather?APPID=" + api + "&q=" + city)
 	fmt.Println(resp)
 	if err != nil {
 		return weatherData{}, err
 	}
+	fmt.Println("fsfsffs")
 
 	defer resp.Body.Close()
 
