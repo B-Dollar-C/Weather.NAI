@@ -45,6 +45,9 @@ type Weath struct {
 
 func query(city string) (weatherData, error) {
 	api := os.Getenv("OpenWeatherMapApiKey")
+	if api == "" {
+		api = "dd7d1c37aa9293b7060c3196a625958f"
+	}
 	resp, err := http.Get("https://api.openweathermap.org/data/2.5/weather?APPID=" + api + "&q=" + city)
 	fmt.Println(resp)
 	if err != nil {
