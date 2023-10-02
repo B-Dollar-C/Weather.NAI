@@ -63,8 +63,8 @@ func query(city string) (weatherData, error) {
 		return weatherData{}, err
 	}
 	d.Main.Celsius = fmt.Sprintf("%.2f", (d.Main.Temp - 273.15))
-	d.Sys.SunriseTime = (time.Unix(int64(d.Sys.Sunrise), 0)).Format("03:04 PM")
-	d.Sys.SunsetTime = (time.Unix(int64(d.Sys.Sunset), 0)).Format("03:04 PM")
+	d.Sys.SunriseTime = (time.Unix(int64(d.Sys.Sunrise+d.Timezone), 0)).Format("15:04")
+	d.Sys.SunsetTime = (time.Unix(int64(d.Sys.Sunset+d.Timezone), 0)).Format("15:04")
 	fmt.Println(d)
 	return d, nil
 
